@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import PlanCard from "@/components/PlanCard";
 import Honeycomb from "@/components/Honeycomb";
 import HeroSeal from "@/components/HeroSeal";
+import Logo from "@/components/Logo";
 import { useWallet } from "@/lib/useWallet";
 import { ARCSCAN, switchToArc } from "@/lib/arcNetwork";
 import { pickProvider } from "@/lib/wallet";
@@ -223,6 +224,72 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── open a plan (escrow ticket) ── */}
+      <section id="open" style={{ ...wrap, marginTop: "clamp(34px, 5vw, 64px)" }}>
+        <div className="ticket rise">
+          <div className="ticket__form">
+            <div style={{ display: "flex", alignItems: "center", gap: 13, marginBottom: "clamp(18px, 2.5vw, 28px)" }}>
+              <Logo size={36} />
+              <div>
+                <div className="label" style={{ color: "var(--gold)" }}>✦ &nbsp;New plan</div>
+                <h2 className="serif" style={{ fontSize: "clamp(26px, 3.2vw, 40px)", color: "var(--cream)", lineHeight: 1 }}>Open an escrow ticket</h2>
+              </div>
+            </div>
+
+            {!account ? (
+              <div style={{ paddingTop: 6 }}>
+                <p style={{ color: "var(--muted)", fontSize: 15.5, lineHeight: 1.6, maxWidth: 400, marginBottom: 20 }}>
+                  Connect your wallet to escrow a course of lessons. The full amount locks in the contract —
+                  released to your tutor one lesson at a time.
+                </p>
+                <button onClick={connect} className="btn btn--gold">Connect wallet</button>
+              </div>
+            ) : (
+              <>
+                <Field label="Tutor's wallet address">
+                  <input value={tutor} onChange={(e) => setTutor(e.target.value)} className="input input--line" placeholder="0x… your tutor's address" />
+                </Field>
+                <div className="form-row" style={{ marginTop: 20 }}>
+                  <Field label="Subject">
+                    <input value={subject} onChange={(e) => setSubject(e.target.value)} maxLength={80} className="input input--line" placeholder="German B1" />
+                  </Field>
+                  <div className="form-row" style={{ gap: 18 }}>
+                    <Field label="Price / lesson (USDC)">
+                      <input value={price} onChange={(e) => setPrice(e.target.value)} inputMode="decimal" className="input input--line" placeholder="5" />
+                    </Field>
+                    <Field label="Lessons">
+                      <input value={sessions} onChange={(e) => setSessions(e.target.value)} inputMode="numeric" className="input input--line" placeholder="8" />
+                    </Field>
+                  </div>
+                </div>
+                <div className="label" style={{ marginTop: 22, color: "var(--muted)" }}>You&apos;ve earned <span className="gold-text num" style={{ letterSpacing: 0 }}>${fmtUsdc(earned)}</span> teaching so far</div>
+              </>
+            )}
+          </div>
+
+          <div className="ticket__stub">
+            <div className="label" style={{ color: "var(--gold-light)" }}>Plan preview</div>
+            <div className="serif" style={{ fontSize: 25, color: "var(--cream)", marginTop: 9, lineHeight: 1.12, minHeight: 28 }}>{subject.trim() || "Your course"}</div>
+            <div className="combrow" style={{ marginTop: 16 }}>
+              {Array.from({ length: Math.min(Math.max(Number(sessions) || 0, 0), 24) }).map((_, i) => <span key={i} className="cell"><span>{i + 1}</span></span>)}
+              {(Number(sessions) || 0) > 24 && <span className="cell-more">+{(Number(sessions) || 0) - 24}</span>}
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "var(--muted)", marginTop: 18, paddingTop: 15, borderTop: "1px solid var(--line)" }}>
+              <span><b className="num" style={{ color: "var(--cream)" }}>{Number(sessions) || 0}</b> lessons</span>
+              <span className="num">${price || "0"} <span style={{ fontFamily: "Outfit, sans-serif", color: "var(--muted)" }}>/ lesson</span></span>
+            </div>
+            <div style={{ marginTop: "auto", paddingTop: 20 }}>
+              <div className="label">Escrow total</div>
+              <div className="num gold-text" style={{ fontSize: 42, lineHeight: 1.04, marginTop: 4 }}>${fmtUsdc(escrowTotal(price, sessions))}</div>
+              <button onClick={account ? openPlan : connect} disabled={activeKey === "open"} className="btn btn--gold btn--lg btn--block" style={{ marginTop: 18 }}>
+                {activeKey === "open" ? "Opening…" : account ? "Fund & open the plan" : "Connect to fund"}
+              </button>
+              {openMsg && <div className="num" style={{ fontSize: 12.5, marginTop: 11, textAlign: "center", color: openMsg.startsWith("✓") ? "var(--good)" : openMsg.startsWith("✗") ? "var(--bad)" : "var(--muted)" }}>{openMsg}</div>}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── the lesson ledger ── */}
       <section style={{ ...wrap, marginTop: "clamp(56px, 8vw, 96px)" }}>
         <h2 className="caps" style={{ textAlign: "center", fontSize: "clamp(30px, 5vw, 56px)", fontWeight: 600, color: "var(--cream)", letterSpacing: "0.04em", marginBottom: "clamp(28px, 4vw, 44px)" }}>
@@ -261,57 +328,6 @@ export default function Home() {
               read live from the chain.
             </p>
           </aside>
-        </div>
-      </section>
-
-      {/* ── open a plan ── */}
-      <section id="open" style={{ ...wrap, marginTop: "clamp(48px, 6vw, 72px)" }}>
-        <div className="panel gild" style={{ padding: "clamp(24px, 3vw, 38px)" }}>
-          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 10, marginBottom: 24 }}>
-            <div>
-              <div className="label" style={{ marginBottom: 9, color: "var(--gold)" }}>✦ &nbsp;New plan</div>
-              <h2 className="serif" style={{ fontSize: "clamp(30px, 4vw, 46px)", color: "var(--cream)" }}>Open a plan</h2>
-            </div>
-            {account && <span className="num" style={{ fontSize: 13.5, color: "var(--muted)" }}>Earned <span className="gold-text">${fmtUsdc(earned)}</span> teaching</span>}
-          </div>
-
-          {!account ? (
-            <div style={{ padding: "22px 0 8px", textAlign: "center" }}>
-              <p style={{ color: "var(--muted)", fontSize: 15.5, marginBottom: 18 }}>Connect your wallet to escrow a course of lessons.</p>
-              <button onClick={connect} className="btn btn--gold">Connect wallet</button>
-            </div>
-          ) : (
-            <>
-              <Field label="Tutor's wallet address">
-                <input value={tutor} onChange={(e) => setTutor(e.target.value)} className="input" placeholder="0x… your tutor's address" />
-              </Field>
-              <div className="form-row" style={{ marginTop: 14 }}>
-                <Field label="Subject">
-                  <input value={subject} onChange={(e) => setSubject(e.target.value)} maxLength={80} className="input" placeholder="German B1" />
-                </Field>
-                <div className="form-row" style={{ gap: 12 }}>
-                  <Field label="Price / lesson (USDC)">
-                    <input value={price} onChange={(e) => setPrice(e.target.value)} inputMode="decimal" className="input" placeholder="5" />
-                  </Field>
-                  <Field label="Lessons">
-                    <input value={sessions} onChange={(e) => setSessions(e.target.value)} inputMode="numeric" className="input" placeholder="8" />
-                  </Field>
-                </div>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginTop: 22, paddingTop: 20, borderTop: "1px solid var(--line)" }}>
-                <div>
-                  <div className="label" style={{ marginBottom: 6 }}>Escrow total</div>
-                  <div className="num gold-text" style={{ fontSize: 28 }}>${fmtUsdc(escrowTotal(price, sessions))} <span style={{ fontSize: 14, color: "var(--muted)" }}>= ${price || "0"} × {sessions || "0"}</span></div>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-                  {openMsg && <span className="num" style={{ fontSize: 13, color: openMsg.startsWith("✓") ? "var(--good)" : openMsg.startsWith("✗") ? "var(--bad)" : "var(--muted)" }}>{openMsg}</span>}
-                  <button onClick={openPlan} disabled={activeKey === "open"} className="btn btn--gold btn--lg">
-                    {activeKey === "open" ? "Opening…" : "Fund & open the plan"}
-                  </button>
-                </div>
-              </div>
-            </>
-          )}
         </div>
       </section>
 
