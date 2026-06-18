@@ -1,11 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TutorStake — pay your tutor per lesson, on ARC",
+  title: "TutorStake — money on the table, released one lesson at a time",
   description:
-    "Escrow a course of lessons in USDC. Each session releases the moment you both confirm — and a missed confirmation settles itself. Pay your tutor safely, on ARC.",
+    "Escrow a course of tutoring in native USDC. Every lesson is a measured line — confirm it and exactly one lesson's USDC pays out, instantly. Go quiet and it auto-settles after 24h.",
   keywords: "TutorStake, ARC, USDC, tutoring, escrow, payments, lessons, language, web3, agentic",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0f1a22",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

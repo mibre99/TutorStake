@@ -34,7 +34,7 @@ export default function Header({ account, balance, chainOk, connecting, onConnec
         position: "sticky",
         top: 0,
         zIndex: 50,
-        background: "rgba(246, 241, 230, 0.82)",
+        background: "rgba(15, 26, 34, 0.82)",
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
         borderBottom: "1px solid var(--line)",
@@ -53,9 +53,9 @@ export default function Header({ account, balance, chainOk, connecting, onConnec
         }}
       >
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 11, textDecoration: "none" }}>
-          <Logo size={29} />
+          <Logo size={30} />
           <span className="display" style={{ fontSize: 23, fontWeight: 600 }}>
-            Tutor<span style={{ color: "var(--amber-deep)" }}>Stake</span>
+            Tutor<span style={{ color: "var(--cyan)" }}>Stake</span>
           </span>
         </Link>
 
