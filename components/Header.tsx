@@ -34,43 +34,33 @@ export default function Header({ account, balance, chainOk, connecting, onConnec
         position: "sticky",
         top: 0,
         zIndex: 50,
-        background: "rgba(15, 26, 34, 0.82)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
+        background: "rgba(17, 10, 3, 0.72)",
+        backdropFilter: "blur(14px)",
+        WebkitBackdropFilter: "blur(14px)",
         borderBottom: "1px solid var(--line)",
       }}
     >
-      <div
-        style={{
-          maxWidth: 1160,
-          margin: "0 auto",
-          padding: "14px 24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 14,
-          flexWrap: "wrap",
-        }}
-      >
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 11, textDecoration: "none" }}>
-          <Logo size={30} />
-          <span className="display" style={{ fontSize: 23, fontWeight: 600 }}>
-            Tutor<span style={{ color: "var(--cyan)" }}>Stake</span>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "15px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none" }}>
+          <Logo size={40} />
+          <span className="serif" style={{ fontSize: 27, fontWeight: 600, color: "var(--cream)", letterSpacing: "0.01em" }}>
+            Tutor<span className="gold-text" style={{ fontStyle: "italic" }}>Stake</span>
           </span>
         </Link>
 
-        <nav style={{ display: "flex", alignItems: "center", gap: 24 }} className="hdr-nav">
-          <a href="#how" style={{ textDecoration: "none", color: "var(--ink-2)", fontWeight: 500, fontSize: 15 }}>How it works</a>
-          <a href="#open" style={{ textDecoration: "none", color: "var(--ink-2)", fontWeight: 500, fontSize: 15 }}>Open a plan</a>
+        <nav style={{ display: "flex", alignItems: "center", gap: 30 }} className="hdr-nav">
+          <a href="#how" className="caps" style={{ textDecoration: "none", color: "var(--muted)", fontSize: 12.5 }}>How it works</a>
+          <a href="#why" className="caps" style={{ textDecoration: "none", color: "var(--muted)", fontSize: 12.5 }}>Why ARC</a>
+          <a href="#open" className="caps" style={{ textDecoration: "none", color: "var(--muted)", fontSize: 12.5 }}>Open a plan</a>
         </nav>
 
         <div style={{ display: "flex", alignItems: "center", gap: 10, justifyContent: "flex-end" }}>
           {account ? (
             <div style={{ position: "relative" }}>
-              <button onClick={() => setOpen((o) => !o)} className="btn btn--ghost btn--sm">
+              <button onClick={() => setOpen((o) => !o)} className="btn btn--outline btn--sm">
                 <span className="dot" style={{ background: chainOk ? "var(--good)" : "var(--bad)" }} />
-                <span style={{ fontVariantNumeric: "tabular-nums" }}>{account.slice(0, 5)}…{account.slice(-4)}</span>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" style={{ transform: open ? "rotate(180deg)" : "none", transition: "transform 0.15s ease", opacity: 0.6 }}>
+                <span className="num" style={{ letterSpacing: "0.04em" }}>{account.slice(0, 5)}…{account.slice(-4)}</span>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" style={{ transform: open ? "rotate(180deg)" : "none", transition: "transform 0.15s ease", opacity: 0.7 }}>
                   <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
@@ -78,20 +68,20 @@ export default function Header({ account, balance, chainOk, connecting, onConnec
               {open && (
                 <>
                   <div onClick={() => setOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 60 }} />
-                  <div className="card" style={{ position: "absolute", top: "calc(100% + 9px)", right: 0, zIndex: 61, minWidth: 246, overflow: "hidden", padding: 0 }}>
-                    <div style={{ padding: "14px 15px" }}>
-                      <div className="label" style={{ marginBottom: 5 }}>Wallet</div>
-                      <div className="num" style={{ fontSize: 14 }}>{account.slice(0, 13)}…{account.slice(-6)}</div>
-                      <div style={{ fontSize: 12.5, color: "var(--muted)", marginTop: 6 }}>{balance || "0"} USDC</div>
+                  <div className="card gild" style={{ position: "absolute", top: "calc(100% + 10px)", right: 0, zIndex: 61, minWidth: 252, overflow: "hidden", padding: 0 }}>
+                    <div style={{ padding: "15px 16px" }}>
+                      <div className="label" style={{ marginBottom: 6 }}>Wallet</div>
+                      <div className="num" style={{ fontSize: 14.5, color: "var(--cream)" }}>{account.slice(0, 13)}…{account.slice(-6)}</div>
+                      <div className="num" style={{ fontSize: 12.5, color: "var(--gold)", marginTop: 6 }}>{balance || "0"} USDC</div>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 15px", borderTop: "1px solid var(--line)", fontSize: 13 }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "13px 16px", borderTop: "1px solid var(--line)", fontSize: 13 }}>
                       <span style={{ color: "var(--muted)" }}>Network</span>
                       {chainOk ? (
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontWeight: 600 }}>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontWeight: 500, color: "var(--cream)" }}>
                           <span className="dot" style={{ background: "var(--good)" }} /> ARC Testnet
                         </span>
                       ) : (
-                        <button onClick={() => switchToArc().catch(() => {})} style={{ background: "none", border: "none", color: "var(--bad)", fontWeight: 700, cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}>
+                        <button onClick={() => switchToArc().catch(() => {})} style={{ background: "none", border: "none", color: "var(--bad)", fontWeight: 600, cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}>
                           Wrong — switch ↗
                         </button>
                       )}
@@ -104,7 +94,7 @@ export default function Header({ account, balance, chainOk, connecting, onConnec
               )}
             </div>
           ) : (
-            <button onClick={onConnect} disabled={connecting} className="btn btn--ink btn--sm">
+            <button onClick={onConnect} disabled={connecting} className="btn btn--gold btn--sm">
               {connecting ? "Connecting…" : "Connect wallet"}
             </button>
           )}
