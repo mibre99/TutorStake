@@ -178,10 +178,11 @@ export default function Home() {
         <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "78%", zIndex: 0, pointerEvents: "none" }}>
           <Honeycomb style={{ position: "absolute", inset: 0 }} />
         </div>
+        <div style={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none", background: "radial-gradient(58% 62% at 50% 40%, rgba(17,10,3,0.94) 0%, rgba(17,10,3,0.7) 46%, rgba(17,10,3,0) 78%)" }} />
 
         <div style={{ ...wrap, position: "relative", zIndex: 1 }} className="rise">
           <div style={{ textAlign: "center" }}>
-            <span className="chip"><span className="dot live" style={{ background: "var(--gold)" }} /> Escrow-backed tutoring · ARC testnet</span>
+            <span className="chip"><span className="dot live" style={{ background: "var(--gold)" }} /> Agentic, USDC-native escrow · ARC testnet</span>
           </div>
 
           <div className="hero-grid" style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center", gap: "clamp(2px, 1.5vw, 18px)", marginTop: "clamp(6px, 1.5vw, 14px)" }}>
@@ -359,8 +360,9 @@ export default function Home() {
         <div id="why" className="panel gild" style={{ padding: "22px 26px", marginTop: 30, display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap" }}>
           <span className="caps gold-text" style={{ fontSize: 13, flex: "0 0 auto" }}>✦ &nbsp;Why ARC</span>
           <span style={{ fontSize: 15, color: "var(--ink)", flex: 1, minWidth: 240, lineHeight: 1.6 }}>
-            USDC is the native gas, so a lesson can cost a few dollars and clear in under a second — and the
-            settle step is an open call any agent can run. Real payments for real lessons, no platform in the middle.
+            On ARC, USDC is the native gas — a lesson clears in under a second for cents. And settling a finished
+            lesson is a permissionless on-chain call, so a <b className="gold-text" style={{ fontWeight: 500 }}>software agent can run the payout
+            autonomously</b> — no platform, no human in the loop. Agentic, stablecoin-native payments for real lessons.
           </span>
         </div>
       </section>

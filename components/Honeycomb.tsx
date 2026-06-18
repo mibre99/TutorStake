@@ -23,8 +23,8 @@ export default function Honeycomb({ style }: { style?: React.CSSProperties }) {
     for (let c = 0; c < cols; c++) {
       const cx = c * dx + (r % 2 ? dx / 2 : 0);
       const cy = r * dy;
-      const op = Math.max(0, Math.min(0.42, (cy / H) * 0.5 + 0.02)).toFixed(3);
-      cells.push(<polygon key={`${r}-${c}`} points={hex(cx, cy)} fill="none" stroke="#caa04a" strokeWidth="1" opacity={op} />);
+      const op = Math.max(0, Math.min(0.2, (cy / H) * 0.26 + 0.01)).toFixed(3);
+      cells.push(<polygon key={`${r}-${c}`} points={hex(cx, cy)} fill="none" stroke="#9c7d3c" strokeWidth="1" opacity={op} />);
     }
   }
 
