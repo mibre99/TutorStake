@@ -90,9 +90,9 @@ export default function Header({ account, balance, chainOk, connecting, onConnec
                         </button>
                       )}
                     </div>
-                    <button className="menu-item" onClick={copy}>{copied ? "Copied ✓" : "Copy address"}</button>
-                    <a className="menu-item" href={`${ARCSCAN}/address/${account}`} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>View on ArcScan ↗</a>
-                    <button className="menu-item danger" onClick={() => { setOpen(false); onDisconnect(); }}>Disconnect</button>
+                    <button className="honey-item" onClick={copy}>{copied ? "Copied ✓" : "Copy address"}</button>
+                    <a className="honey-item" href={`${ARCSCAN}/address/${account}`} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>View on ArcScan ↗</a>
+                    <button className="honey-item danger" onClick={() => { setOpen(false); onDisconnect(); }}>Disconnect</button>
                   </div>
                 </>
               )}

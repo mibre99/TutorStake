@@ -87,9 +87,9 @@ a { color: inherit; }
 }
 .label {
   font-family: 'Oswald', sans-serif;
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 500;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
 }
@@ -296,18 +296,21 @@ a { color: inherit; }
 .segctl button:hover { color: var(--cream); }
 .segctl button[data-on="true"] { background: linear-gradient(180deg, #f4dd92, #d9a93f); color: #2a1c05; }
 
-/* wallet menu */
-.menu-item {
-  display: flex; align-items: center; gap: 9px; width: 100%;
-  padding: 12px 15px; background: transparent; border: none; border-top: 1px solid var(--line);
+/* wallet menu — warm gilded rows, soft honey wash on hover */
+.honey-item {
+  display: flex; align-items: center; gap: 9px; width: calc(100% - 12px);
+  margin: 0 6px 4px; padding: 11px 13px; background: transparent; border: none; border-radius: 11px;
   color: var(--ink); font-family: 'Outfit', sans-serif; font-size: 13.5px; font-weight: 500; text-align: left; cursor: pointer; text-decoration: none;
+  transition: background 0.16s ease, color 0.16s ease;
 }
-.menu-item:hover { background: rgba(230, 181, 74, 0.07); }
-.menu-item.danger:hover { color: var(--bad); }
+.honey-item:first-of-type { margin-top: 6px; }
+.honey-item:last-child { margin-bottom: 6px; }
+.honey-item:hover { background: linear-gradient(180deg, rgba(247, 231, 178, 0.12), rgba(230, 181, 74, 0.08)); color: var(--gold-light); }
+.honey-item.danger:hover { background: rgba(223, 111, 76, 0.12); color: var(--bad); }
 
 /* motion */
-@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-.rise { animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@keyframes chalk { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.rise { animation: chalk 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 @keyframes live-dot { 0%, 100% { box-shadow: 0 0 0 0 rgba(230, 181, 74, 0.55); } 50% { box-shadow: 0 0 0 5px rgba(230, 181, 74, 0); } }
 .live { animation: live-dot 2.2s infinite; }
 @keyframes float-y { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
