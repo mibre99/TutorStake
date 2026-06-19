@@ -1,25 +1,34 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
 import { ethers } from "ethers";
-import { ARC_RPC, ARC_CHAIN_HEX, switchToArc } from "./arcNetwork";
-import { ensureDiscovered, pickProvider, pickDetail, setChosenRdns, type Eip1193Provider } from "./wallet";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-const DISCONNECT_KEY = "tutorstake.disconnected";
+import { ensureDiscovered, pickDetail, pickProvider, setChosenRdns, type Eip1193Provider } from "./wallet";
+import { ARC_CHAIN_HEX, ARC_RPC, switchToArc } from "./arcNetwork";
+
+// Flag (in localStorage) that the user deliberately disconnected, so we don't
+// silently re-attach on the next page load. Key is built from a base + suffix.
+const SESSION_BASE = "ts";
+const DISCONNECT_KEY = `${SESSION_BASE}/walletClosed`;
+
+// Normalise a hex chainId reported by a wallet against the ARC chain id.
+function isArcChain(id: unknown): boolean {
+  return (id as string).toLowerCase() === ARC_CHAIN_HEX.toLowerCase();
+}
 
 export function useWallet() {
   const [account, setAccount] = useState("");
   const [balance, setBalance] = useState("");
   const [chainOk, setChainOk] = useState(false);
   const [connecting, setConnecting] = useState(false);
-  const disconnectedRef = useRef(false);
+  const optedOutRef = useRef(false);
   const subRef = useRef<{ provider: Eip1193Provider; cleanup: () => void } | null>(null);
 
   const refreshBalance = useCallback(async (addr: string) => {
     try {
-      const p = new ethers.JsonRpcProvider(ARC_RPC);
-      const b = await p.getBalance(addr);
-      setBalance(parseFloat(ethers.formatEther(b)).toFixed(3));
+      const rpc = new ethers.JsonRpcProvider(ARC_RPC);
+      const wei = await rpc.getBalance(addr);
+      setBalance(parseFloat(ethers.formatEther(wei)).toFixed(3));
     } catch {
       setBalance("—");
     }
@@ -30,8 +39,9 @@ export function useWallet() {
       if (!inj?.on) return;
       if (subRef.current?.provider === inj) return;
       subRef.current?.cleanup();
+
       const onAcc = (a: unknown) => {
-        if (disconnectedRef.current) return;
+        if (optedOutRef.current) return;
         const list = a as string[];
         if (list.length) {
           setAccount(list[0]);
@@ -42,8 +52,8 @@ export function useWallet() {
           setChainOk(false);
         }
       };
-      const onChain = (c: unknown) =>
-        setChainOk((c as string).toLowerCase() === ARC_CHAIN_HEX.toLowerCase());
+      const onChain = (c: unknown) => setChainOk(isArcChain(c));
+
       inj.on("accountsChanged", onAcc);
       inj.on("chainChanged", onChain);
       subRef.current = {
@@ -58,7 +68,7 @@ export function useWallet() {
   );
 
   const connect = useCallback(async () => {
-    disconnectedRef.current = false;
+    optedOutRef.current = false;
     if (typeof window !== "undefined") {
       try {
         window.localStorage.removeItem(DISCONNECT_KEY);
@@ -84,7 +94,7 @@ export function useWallet() {
       }
       try {
         const id = (await inj.request({ method: "eth_chainId" })) as string;
-        setChainOk(id.toLowerCase() === ARC_CHAIN_HEX.toLowerCase());
+        setChainOk(isArcChain(id));
       } catch {
         setChainOk(false);
       }
@@ -97,7 +107,7 @@ export function useWallet() {
   }, [refreshBalance, subscribe]);
 
   const disconnect = useCallback(() => {
-    disconnectedRef.current = true;
+    optedOutRef.current = true;
     if (typeof window !== "undefined") {
       try {
         window.localStorage.setItem(DISCONNECT_KEY, "1");
@@ -110,15 +120,16 @@ export function useWallet() {
     setChainOk(false);
   }, []);
 
+  // On mount: respect a previous opt-out, otherwise try a silent reconnect.
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage.getItem(DISCONNECT_KEY) === "1") {
-      disconnectedRef.current = true;
+      optedOutRef.current = true;
     }
     (async () => {
       await ensureDiscovered();
       const inj = pickProvider();
       if (!inj) return;
-      if (!disconnectedRef.current) {
+      if (!optedOutRef.current) {
         try {
           const accs = (await inj.request({ method: "eth_accounts" })) as string[];
           if (accs.length) {
@@ -126,7 +137,7 @@ export function useWallet() {
             refreshBalance(accs[0]);
             inj
               .request({ method: "eth_chainId" })
-              .then((id) => setChainOk((id as string).toLowerCase() === ARC_CHAIN_HEX.toLowerCase()))
+              .then((id) => setChainOk(isArcChain(id)))
               .catch(() => {});
           }
         } catch {
